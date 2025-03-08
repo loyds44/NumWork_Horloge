@@ -1,5 +1,5 @@
 import turtle
-from time import sleep
+import time
 
 needle_length = 90
 secondes = 0
@@ -29,59 +29,55 @@ def cadran():
         turtle.backward(taille_barre)
         turtle.penup()
 
-    turtle.goto(0,-150)
-
-def get_angle(index):
-    global secondes, minutes, heures
+def get_angle(index, sec, min, hr):
     if index == 0:
-        return 90 - secondes * 6
+        return 90 - sec * 6
     elif index == 1:
-        return 90 - (minutes * 6 + secondes * 0.1)
+        return 90 - (min * 6 + sec * 0.1)
     else:
-        return 90 - ((heures % 12) * 30 + minutes * 0.5)
+        return 90 - ((hr % 12) * 30 + min * 0.5)
 
-def clear(seconde, minute, heure, length):
+def clear(sec, min, hr, length):
     index = 0
     turtle.pensize(5)
-    for _ in [seconde, minute, heure]:
+    for _ in range(3):
         turtle.goto(0, 0)
-        turtle.setheading(get_angle(index))
+        turtle.setheading(get_angle(index, sec, min, hr))
         turtle.pendown()
         turtle.pencolor("white")
-        turtle.forward(length+3)
+        turtle.forward(length + 3)
         turtle.penup()
         index += 1
 
-def draw(seconde, minute, heure, length):
+def draw(sec, min, hr, length):
     index = 0
     turtle.pensize(1)
-    for _ in [seconde, minute, heure]:
+    for _ in range(3):
         turtle.goto(0, 0)
-        turtle.setheading(get_angle(index))
+        turtle.setheading(get_angle(index, sec, min, hr))
         turtle.pendown()
-        if index < 1:
+        if index == 0:
             turtle.pencolor("red")
             turtle.forward(length)
-        elif index ==1 :
+        elif index == 1:
             turtle.pencolor("blue")
-            turtle.forward(length+3)
-        else :
+            turtle.forward(length + 3)
+        else:
             turtle.pencolor("black")
-            turtle.forward(length+3)
+            turtle.forward(length + 3)
         turtle.penup()
         index += 1
 
-def verification(secondes, minutes, heures):
-    secondes += 1
-    if secondes > 59:
-        secondes = 0
-        minutes += 1
-        if minutes > 59:
-            minutes = 0
-            heures += 1
-            if heures > 23:
-                heures = 0
-    return secondes, minutes, heures
+def verification(sec, min, hr):
+    if sec > 59:
+        sec = 0
+        min += 1
+        if min > 59:
+            min = 0
+            hr += 1
+            if hr > 23:
+                hr = 0
+    return sec, min, hr
 
 old_angle = 90
 
@@ -93,10 +89,15 @@ turtle.pencolor("red")
 turtle.forward(needle_length)
 turtle.penup()
 
-
+start = time.monotonic()
 while True:
-    sleep(1)
     clear(old_secondes, old_minutes, old_heures, needle_length)
-    secondes, minutes, heures = verification(secondes, minutes, heures)
     draw(secondes, minutes, heures, needle_length)
     old_secondes, old_minutes, old_heures = secondes, minutes, heures
+
+    temps_ecoule = time.monotonic() - start
+    secondes = int(temps_ecoule) % 60
+    minutes = int(minutes + (secondes + temps_ecoule) // 60) % 60
+    heures = int(heures + (minutes + temps_ecoule // 60) // 60) % 24
+
+    print(heures, minutes, secondes)
