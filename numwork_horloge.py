@@ -5,6 +5,7 @@ needle_length = 90
 secondes = 0
 minutes = int(input("Minute :"))
 heures = int(input("Heure :"))
+initial_total = heures * 3600 + minutes * 60 #permet de savoir le nbr de secondes de depart par rapport a ce qu'a mis l'uitlisateur 
 old_secondes, old_minutes, old_heures = secondes, minutes, heures
 
 turtle.hideturtle()
@@ -40,12 +41,12 @@ def get_angle(index, sec, min, hr):
 def clear(sec, min, hr, length):
     index = 0
     turtle.pensize(5)
+    turtle.pencolor("white")
     for _ in range(3):
         turtle.goto(0, 0)
         turtle.setheading(get_angle(index, sec, min, hr))
         turtle.pendown()
-        turtle.pencolor("white")
-        turtle.forward(length + 3)
+        turtle.forward(length + 5)
         turtle.penup()
         index += 1
 
@@ -64,40 +65,25 @@ def draw(sec, min, hr, length):
             turtle.forward(length + 3)
         else:
             turtle.pencolor("black")
-            turtle.forward(length + 3)
+            turtle.forward(length + 5)
         turtle.penup()
         index += 1
 
-def verification(sec, min, hr):
-    if sec > 59:
-        sec = 0
-        min += 1
-        if min > 59:
-            min = 0
-            hr += 1
-            if hr > 23:
-                hr = 0
-    return sec, min, hr
-
-old_angle = 90
-
 cadran()
-turtle.goto(0, 0)
-turtle.setheading(old_angle)
-turtle.pendown()
-turtle.pencolor("red")
-turtle.forward(needle_length)
-turtle.penup()
-
 start = time.monotonic()
 while True:
+    temps_loop = time.monotonic()
     clear(old_secondes, old_minutes, old_heures, needle_length)
     draw(secondes, minutes, heures, needle_length)
     old_secondes, old_minutes, old_heures = secondes, minutes, heures
 
-    temps_ecoule = time.monotonic() - start
-    secondes = int(temps_ecoule) % 60
-    minutes = int(minutes + (secondes + temps_ecoule) // 60) % 60
-    heures = int(heures + (minutes + temps_ecoule // 60) // 60) % 24
+    temps_loop = time.monotonic()-temps_loop
+    if temps_loop <1:
+        time.sleep(1 - temps_loop )
 
-    print(heures, minutes, secondes)
+    temps_ecoule = int(time.monotonic() - start) + initial_total
+    secondes = temps_ecoule % 60
+    minutes = (temps_ecoule // 60) % 60
+    heures   = (temps_ecoule // 3600) % 24
+
+    #print(heures, minutes, secondes)
