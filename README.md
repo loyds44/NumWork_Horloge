@@ -1,6 +1,6 @@
 # Horloge Analogique avec Turtle
 
-Ce projet implémente une horloge analogique en Python à l'aide de la bibliothèque `turtle`. Les aiguilles affichent les secondes, minutes et heures avec un mouvement fluide.
+Ce projet implémente une horloge analogique en Python à l'aide de la bibliothèque `turtle`. Les aiguilles affichent les secondes, minutes et heures.
 
 ## Couleurs des Aiguilles
 - Rouge : Secondes
